@@ -1,0 +1,39 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Set Config Variables
+      run: |
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} APP_HOST="${{ vars.HOST }}"
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} APP_HOST="${{ vars.TWILIO_ACCOUNT_SID }}"
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} APP_HOST="${{ vars.TWILIO_AUTH_TOKEN }}"
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} APP_HOST="${{ vars.OPENAI_CHAT_GPT }}"
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+
+    - name: Deploy to Heroku
+      uses: akhileshns/heroku-deploy@v3.12.12
+      with:
+        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        heroku_app_name: ${{ vars.HEROKU_APP_NAME }}
+        heroku_email: ${{ vars.HEROKU_EMAIL }}
+        buildpack: "heroku/nodejs"
