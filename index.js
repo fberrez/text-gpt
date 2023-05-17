@@ -10,6 +10,7 @@ async function sendWhatsAppMessage(to, message) {
 			from: 'whatsapp:+14155238886', // Your sandbox phone number
 			to: `whatsapp:${to}`,
 		});
+		console.log(`message ${message}`);
 		console.log('Message sent:', result.sid);
 	} catch (error) {
 		console.error('Error sending message:', error);
@@ -48,6 +49,7 @@ const fastify = require('fastify')();
 fastify.post('/twilio', (request, reply) => {
 	// Assuming you want to receive JSON data in the request body
 	const {phoneNumber, message} = request.body;
+	console.log(JSON.stringify(request.body, '  ', 2));
 	processWhatsAppMessage(phoneNumber, message);
 	reply.send({success: true});
 });
