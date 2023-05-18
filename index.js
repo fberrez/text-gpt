@@ -47,6 +47,9 @@ const fastify = require('fastify')();
 
 // Route handler for POST /twilio
 fastify.post('/twilio', (request, reply) => {
+	console.log(request.body);
+	console.log(request.query);
+	console.log(request.params);
 	// Assuming you want to receive JSON data in the request body
 	const {phoneNumber, message} = request.body;
 	console.log(JSON.stringify(request.body, '  ', 2));
