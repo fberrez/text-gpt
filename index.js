@@ -11,8 +11,8 @@ async function sendWhatsAppMessage(to, message) {
 			from: 'whatsapp:+14155238886', // Your sandbox phone number
 			to: `whatsapp:${to}`,
 		});
-		winston.log(`message ${message}`);
-		winston.log('Message sent:', result.sid);
+		winston.info(`message ${message}`);
+		winston.info('Message sent:', result.sid);
 	} catch (error) {
 		console.error('Error sending message:', error);
 	}
@@ -48,12 +48,12 @@ const fastify = require('fastify')();
 
 // Route handler for POST /twilio
 fastify.post('/twilio', (request, reply) => {
-	winston.log(request.body);
-	winston.log(request.query);
-	winston.log(request.params);
+	winston.info(request.body);
+	winston.info(request.query);
+	winston.info(request.params);
 	// Assuming you want to receive JSON data in the request body
 	const {phoneNumber, message} = request.body;
-	winston.log(JSON.stringify(request.body, '  ', 2));
+	winston.info(JSON.stringify(request.body, '  ', 2));
 	processWhatsAppMessage(phoneNumber, message);
 	reply.send({success: true});
 });
@@ -64,6 +64,6 @@ fastify.listen({port: config.PORT, host: config.HOST}, (err, address) => {
 		process.exit(1);
 	}
 
-	winston.log(`Server listening at ${address}`);
+	winston.info(`Server listening at ${address}`);
 });
 
