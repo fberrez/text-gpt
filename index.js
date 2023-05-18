@@ -3,6 +3,7 @@ const client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_T
 const {Configuration, OpenAIApi} = require('openai');
 const xmlBodyParser = require('fastify-xml-body-parser');
 const multipart = require('fastify-multipart');
+const fformbody = require('@fastify/formbody');
 
 // Function to send a WhatsApp message
 async function sendWhatsAppMessage(to, message) {
@@ -49,6 +50,7 @@ const fastify = require('fastify')();
 
 fastify.register(xmlBodyParser);
 fastify.register(multipart);
+fastify.register(fformbody);
 
 // Route handler for POST /twilio
 fastify.post('/twilio', async (request, reply) => {
