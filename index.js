@@ -2,6 +2,7 @@ const config = require('./config');
 const client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 const {Configuration, OpenAIApi} = require('openai');
 const xmlBodyParser = require('fastify-xml-body-parser');
+const multipart = require('fastify-multipart');
 
 // Function to send a WhatsApp message
 async function sendWhatsAppMessage(to, message) {
@@ -47,15 +48,29 @@ async function processWhatsAppMessage(from, message) {
 const fastify = require('fastify')();
 
 fastify.register(xmlBodyParser);
+fastify.register(multipart);
 
 // Route handler for POST /twilio
-fastify.post('/twilio', (request, reply) => {
-	console.log(request.body);
-	console.log(request.query);
-	console.log(request.params);
-	// Assuming you want to receive JSON data in the request body
-	const {phoneNumber, message} = request.body;
-	console.log(JSON.stringify(request.body, '  ', 2));
+fastify.post('/twilio', async (request, reply) => {
+	const parts = request.parts();
+
+	console.log(parts);
+
+	// Iterate over the FormData parts
+	let phoneNumber = '';
+	let message = '';
+	for await (const part of parts) {
+		if (part.fieldname === 'phoneNumber') {
+			phoneNumber = await part.toString();
+			// Handle phoneNumber value
+		} else if (part.fieldname === 'message') {
+			message = await part.toString();
+			// Handle message value
+		} else {
+			// Handle other FormData fields if needed
+		}
+	}
+
 	processWhatsAppMessage(phoneNumber, message);
 	reply.send({success: true});
 });
