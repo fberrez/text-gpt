@@ -1,8 +1,6 @@
 const config = require('./config');
 const client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_TOKEN);
 const {Configuration, OpenAIApi} = require('openai');
-const xmlBodyParser = require('fastify-xml-body-parser');
-const multipart = require('fastify-multipart');
 const fformbody = require('@fastify/formbody');
 
 // Function to send a WhatsApp message
@@ -11,9 +9,8 @@ async function sendWhatsAppMessage(to, message) {
 		const result = await client.messages.create({
 			body: message,
 			from: 'whatsapp:+14155238886', // Your sandbox phone number
-			to: `whatsapp:${to}`,
+			to,
 		});
-		console.log(`message ${message}`);
 		console.log('Message sent:', result.sid);
 	} catch (error) {
 		console.error('Error sending message:', error);
@@ -23,7 +20,7 @@ async function sendWhatsAppMessage(to, message) {
 // Function to send a message to ChatGPT API and get the response
 async function sendMessageToChatGPT(message) {
 	const configuration = new Configuration({
-		apiKey: config.CHATGPT_API_KEY,
+		apiKey: config.OPENAI_CHAT_GPT,
 	});
 	const openai = new OpenAIApi(configuration);
 
@@ -32,6 +29,7 @@ async function sendMessageToChatGPT(message) {
 			model: 'text-davinci-003',
 			prompt: message,
 		});
+		console.log('chatgpt\'s response', completion.data.choices[0].text);
 		return completion.data.choices[0].text;
 	} catch (error) {
 		console.error('Error creating completion:', error);
@@ -48,32 +46,14 @@ async function processWhatsAppMessage(from, message) {
 
 const fastify = require('fastify')();
 
-fastify.register(xmlBodyParser);
-fastify.register(multipart);
 fastify.register(fformbody);
 
 // Route handler for POST /twilio
 fastify.post('/twilio', async (request, reply) => {
-	const parts = request.parts();
+	const body = JSON.parse(JSON.stringify(request.body));
+	console.log(`message received from ${body.From}: ${body.Body}`);
 
-	console.log(parts);
-
-	// Iterate over the FormData parts
-	let phoneNumber = '';
-	let message = '';
-	for await (const part of parts) {
-		if (part.fieldname === 'phoneNumber') {
-			phoneNumber = await part.toString();
-			// Handle phoneNumber value
-		} else if (part.fieldname === 'message') {
-			message = await part.toString();
-			// Handle message value
-		} else {
-			// Handle other FormData fields if needed
-		}
-	}
-
-	processWhatsAppMessage(phoneNumber, message);
+	processWhatsAppMessage(body.From, body.Body);
 	reply.send({success: true});
 });
 
