@@ -3,16 +3,44 @@ const client = require('twilio')(config.TWILIO_ACCOUNT_SID, config.TWILIO_AUTH_T
 const {Configuration, OpenAIApi} = require('openai');
 const fformbody = require('@fastify/formbody');
 
+function splitString(str, maxLength) {
+	const substrings = [];
+	let start = 0;
+
+	while (start < str.length) {
+		let end = start + maxLength;
+		if (end >= str.length) {
+			end = str.length;
+		} else {
+			while (str.charAt(end) !== ' ' && end > start) {
+				end--;
+			}
+
+			while (!['.', '!', '?'].includes(str.charAt(end - 1)) && end > start) {
+				end--;
+			}
+		}
+
+		substrings.push(str.substring(start, end));
+		start = end + 1;
+	}
+
+	return substrings;
+}
+
 // Function to send a WhatsApp message
 async function sendWhatsAppMessage(to, message) {
+	const substrings = splitString(message, 1000);
 	try {
 		console.log(`[whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}] sending message to ${to}: ${message}`);
-		const result = await client.messages.create({
-			body: message.length > 0 ? message : 'No message provided',
-			from: `whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}`, // Your sandbox phone number
-			to,
-		});
-		console.log('Message sent:', result.sid);
+		for (let i = 0; i < substrings.length; i++) {
+			console.log(substrings[i]);
+			await client.messages.create({
+				body: substrings[i],
+				from: `whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}`, // Your sandbox phone number
+				to,
+			});
+		}
 	} catch (error) {
 		console.error('Error sending message:', error);
 	}
