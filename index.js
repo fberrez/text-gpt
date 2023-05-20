@@ -24,25 +24,26 @@ async function sendMessageToChatGPT(message) {
 	});
 	const openai = new OpenAIApi(configuration);
 
+	let response = '';
 	try {
 		const completion = await openai.createChatCompletion({
 			model: 'text-davinci-003',
 			prompt: message,
 			max_tokens: 2048,
 		});
-		console.log('chatgpt\'s response', completion.data.choices[0].text);
-		return completion.data.choices[0].text;
+		response = completion.data.choices[0].text;
+		console.log('chatgpt\'s response', response);
 	} catch (error) {
 		console.error('Error creating completion:', error);
 	}
 
-	return '';
+	return response;
 }
 
 // Usage example
 async function processWhatsAppMessage(from, message) {
 	const reply = await sendMessageToChatGPT(message);
-	sendWhatsAppMessage(from, reply);
+	await sendWhatsAppMessage(from, reply);
 }
 
 const fastify = require('fastify')();
@@ -54,7 +55,7 @@ fastify.post('/twilio', async (request, reply) => {
 	const body = JSON.parse(JSON.stringify(request.body));
 	console.log(`message received from ${body.From}: ${body.Body}`);
 
-	processWhatsAppMessage(body.From, body.Body);
+	await processWhatsAppMessage(body.From, body.Body);
 	reply.send({success: true});
 });
 
