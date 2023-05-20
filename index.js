@@ -8,7 +8,7 @@ async function sendWhatsAppMessage(to, message) {
 	try {
 		console.log(`[whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}] sending message to ${to}: ${message}`);
 		const result = await client.messages.create({
-			body: message,
+			body: message.length > 0 ? message : 'No message provided',
 			from: `whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}`, // Your sandbox phone number
 			to,
 		});
