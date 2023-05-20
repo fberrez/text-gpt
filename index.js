@@ -8,7 +8,7 @@ async function sendWhatsAppMessage(to, message) {
 	try {
 		const result = await client.messages.create({
 			body: message,
-			from: 'whatsapp:+14155238886', // Your sandbox phone number
+			from: `whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}`, // Your sandbox phone number
 			to,
 		});
 		console.log('Message sent:', result.sid);
@@ -25,9 +25,10 @@ async function sendMessageToChatGPT(message) {
 	const openai = new OpenAIApi(configuration);
 
 	try {
-		const completion = await openai.createCompletion({
+		const completion = await openai.createChatCompletion({
 			model: 'text-davinci-003',
 			prompt: message,
+			max_tokens: 2048,
 		});
 		console.log('chatgpt\'s response', completion.data.choices[0].text);
 		return completion.data.choices[0].text;

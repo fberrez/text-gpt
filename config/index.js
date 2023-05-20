@@ -32,6 +32,12 @@ const config = convict({
 		default: 'xxx',
 		env: 'TWILIO_AUTH_TOKEN',
 	},
+	TWILIO_WHATSAPP_PHONE_NUMBER: {
+		doc: 'Twilio WhatsApp Phone Number',
+		format: String,
+		default: 'xxx',
+		env: 'TWILIO_WHATSAPP_PHONE_NUMBER',
+	},
 	OPENAI_CHAT_GPT: {
 		doc: 'OpenAI Chat GPT',
 		format: String,

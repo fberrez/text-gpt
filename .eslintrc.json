@@ -10,6 +10,7 @@
     "ecmaVersion": "latest"
   },
   "rules": {
-    "new-cap": ["error", { "capIsNewExceptions": ["ObjectId"] }]
+    "new-cap": ["error", { "capIsNewExceptions": ["ObjectId"] }],
+    "camelcase": ["error", {"allow": ["max_tokens"]}]
   }
 }
