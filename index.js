@@ -6,6 +6,7 @@ const fformbody = require('@fastify/formbody');
 // Function to send a WhatsApp message
 async function sendWhatsAppMessage(to, message) {
 	try {
+		console.log(`[whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}] sending message to ${to}: ${message}`);
 		const result = await client.messages.create({
 			body: message,
 			from: `whatsapp:${config.TWILIO_WHATSAPP_PHONE_NUMBER}`, // Your sandbox phone number
@@ -26,13 +27,14 @@ async function sendMessageToChatGPT(message) {
 
 	let response = '';
 	try {
+		console.log('chatgpt\'s request:', message);
 		const completion = await openai.createChatCompletion({
 			model: 'text-davinci-003',
 			prompt: message,
 			max_tokens: 2048,
 		});
 		response = completion.data.choices[0].text;
-		console.log('chatgpt\'s response', response);
+		console.log('chatgpt\'s response:', response);
 	} catch (error) {
 		console.error('Error creating completion:', error);
 	}
