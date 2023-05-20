@@ -36,7 +36,7 @@ async function sendMessageToChatGPT(message) {
 		response = completion.data.choices[0].text;
 		console.log('chatgpt\'s response:', response);
 	} catch (error) {
-		console.error('Error creating completion:', error);
+		console.error('Error creating completion:', error.data?.error);
 	}
 
 	return response;
