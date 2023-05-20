@@ -18,6 +18,21 @@ async function sendWhatsAppMessage(to, message) {
 	}
 }
 
+// Function to send a WhatsApp message
+async function sendSMSMessage(to, message) {
+	try {
+		console.log(`[${config.TWILIO_SMS_PHONE_NUMBER}] sending message to ${to}: ${message}`);
+		const result = await client.messages.create({
+			body: message.length > 0 ? message : 'No message provided',
+			from: `${config.TWILIO_SMS_PHONE_NUMBER}`, // Your sandbox phone number
+			to,
+		});
+		console.log('Message sent:', result.sid);
+	} catch (error) {
+		console.error('Error sending message:', error);
+	}
+}
+
 // Function to send a message to ChatGPT API and get the response
 async function sendMessageToChatGPT(message) {
 	const configuration = new Configuration({
@@ -48,16 +63,29 @@ async function processWhatsAppMessage(from, message) {
 	await sendWhatsAppMessage(from, reply);
 }
 
+async function processSMSMessage(from, message) {
+	const reply = await sendMessageToChatGPT(message);
+	await sendSMSMessage(from, reply);
+}
+
 const fastify = require('fastify')();
 
 fastify.register(fformbody);
 
 // Route handler for POST /twilio
-fastify.post('/twilio', async (request, reply) => {
+fastify.post('/twilio/whatsapp', async (request, reply) => {
 	const body = JSON.parse(JSON.stringify(request.body));
-	console.log(`message received from ${body.From}: ${body.Body}`);
+	console.log(`whatsapp message received from ${body.From}: ${body.Body}`);
 
 	await processWhatsAppMessage(body.From, body.Body);
+	reply.send({success: true});
+});
+
+fastify.post('/twilio/sms', async (request, reply) => {
+	const body = JSON.parse(JSON.stringify(request.body));
+	console.log(`sms received from ${body.From}: ${body.Body}`);
+
+	await processSMSMessage(body.From, body.Body);
 	reply.send({success: true});
 });
 
