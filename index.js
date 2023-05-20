@@ -28,7 +28,7 @@ async function sendMessageToChatGPT(message) {
 	let response = '';
 	try {
 		console.log('chatgpt\'s request:', message);
-		const completion = await openai.createChatCompletion({
+		const completion = await openai.createCompletion({
 			model: 'text-davinci-003',
 			prompt: message,
 			max_tokens: 2048,
