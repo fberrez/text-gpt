@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@fastify/formbody": "^7.4.0",
-    "axios": "^1.4.0",
     "convict": "^6.2.4",
     "dotenv": "^16.0.3",
     "fastify": "^4.17.0",
+    "moment": "^2.29.4",
     "openai": "^3.2.1",
     "twilio": "^4.11.0"
   }
