@@ -56,6 +56,18 @@ const config = convict({
 		default: 'xxx',
 		env: 'MONGO_URL',
 	},
+	STRIPE_PAYMENT_LINK: {
+		doc: 'Stripe Payment Link',
+		format: String,
+		default: 'xxx',
+		env: 'STRIPE_PAYMENT_LINK',
+	},
+	CONTACT_EMAIL: {
+		doc: 'Contact Email',
+		format: String,
+		default: 'xxx',
+		env: 'CONTACT_EMAIL',
+	},
 });
 
 module.exports = {...config.getProperties()};
