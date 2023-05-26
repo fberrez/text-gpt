@@ -50,6 +50,12 @@ const config = convict({
 		default: 'xxx',
 		env: 'OPENAI_CHAT_GPT',
 	},
+	MONGO_URL: {
+		doc: 'MongoDB URL',
+		format: String,
+		default: 'xxx',
+		env: 'MONGO_URL',
+	},
 });
 
 module.exports = {...config.getProperties()};
