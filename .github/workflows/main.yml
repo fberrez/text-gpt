@@ -27,9 +27,10 @@ jobs:
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} TWILIO_ACCOUNT_SID="${{ secrets.TWILIO_ACCOUNT_SID }}"
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} TWILIO_AUTH_TOKEN="${{ secrets.TWILIO_AUTH_TOKEN }}"
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} TWILIO_WHATSAPP_PHONE_NUMBER="${{ vars.TWILIO_WHATSAPP_PHONE_NUMBER }}"
-        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} TWILIO_SMS_PHONE_NUMBER="${{ vars.TWILIO_SMS_PHONE_NUMBER }}"
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} OPENAI_CHAT_GPT="${{ secrets.OPENAI_CHAT_GPT }}"
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} STRIPE_PAYMENT_LINK="${{ vars.STRIPE_PAYMENT_LINK }}"
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} STRIPE_API_KEY="${{ secrets.STRIPE_API_KEY }}"
+        heroku config:set -a ${{ vars.HEROKU_APP_NAME }} STRIPE_SIGNING_SECERT="${{ secrets.STRIPE_SIGNING_SECERT }}"
         heroku config:set -a ${{ vars.HEROKU_APP_NAME }} CONTACT_EMAIL="${{ vars.CONTACT_EMAIL }}"
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}

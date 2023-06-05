@@ -1,7 +1,7 @@
 require('dotenv').config();
 const convict = require('convict');
 
-const config = convict({
+const CONFIG = convict({
 	ENV: {
 		doc: 'The application environment.',
 		format: ['production', 'development', 'test'],
@@ -38,12 +38,6 @@ const config = convict({
 		default: 'xxx',
 		env: 'TWILIO_WHATSAPP_PHONE_NUMBER',
 	},
-	TWILIO_SMS_PHONE_NUMBER: {
-		doc: 'Twilio SMS Phone Number',
-		format: String,
-		default: 'xxx',
-		env: 'TWILIO_SMS_PHONE_NUMBER',
-	},
 	OPENAI_CHAT_GPT: {
 		doc: 'OpenAI Chat GPT',
 		format: String,
@@ -56,18 +50,30 @@ const config = convict({
 		default: 'xxx',
 		env: 'MONGO_URL',
 	},
-	STRIPE_PAYMENT_LINK: {
-		doc: 'Stripe Payment Link',
-		format: String,
-		default: 'xxx',
-		env: 'STRIPE_PAYMENT_LINK',
-	},
 	CONTACT_EMAIL: {
 		doc: 'Contact Email',
 		format: String,
 		default: 'xxx',
 		env: 'CONTACT_EMAIL',
 	},
+	STRIPE_PAYMENT_LINK: {
+		doc: 'Stripe Payment Link',
+		format: String,
+		default: 'xxx',
+		env: 'STRIPE_PAYMENT_LINK',
+	},
+	STRIPE_API_KEY: {
+		doc: 'Stripe API Key',
+		format: String,
+		default: 'xxx',
+		env: 'STRIPE_API_KEY',
+	},
+	STRIPE_SIGNING_SECERT: {
+		doc: 'Stripe Signing Secert',
+		format: String,
+		default: 'xxx',
+		env: 'STRIPE_SIGNING_SECERT',
+	},
 });
 
-module.exports = {...config.getProperties()};
+module.exports = {...CONFIG.getProperties()};

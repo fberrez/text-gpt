@@ -1,10 +1,11 @@
-const config = require('./config');
-const server = require('./lib/server');
+const CONFIG = require('./config');
+const {fastify, init: fastifyInit} = require('./lib/server');
 const mongoose = require('./lib/backend/mongo');
 
 async function main() {
-	await mongoose.connect(config.MONGO_URL);
-	server.listen({port: config.PORT, host: config.HOST}, (err, address) => {
+	await mongoose.connect(CONFIG.MONGO_URL);
+	await fastifyInit();
+	fastify.listen({port: CONFIG.PORT, host: CONFIG.HOST}, (err, address) => {
 		if (err) {
 			console.error(err);
 			process.exit(1);
@@ -17,7 +18,7 @@ async function main() {
 async function shutdown() {
 	console.log('SIGTERM signal received: closing HTTP server and mongoDB connection');
 	await mongoose.disconnect();
-	await server.close();
+	await fastify.close();
 	console.log('HTTP server closed');
 	process.exit(0);
 }
